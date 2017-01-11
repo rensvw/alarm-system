@@ -1,0 +1,25 @@
+<h3>Home</h3>
+<p>Welkom op de startpagina van het alarmsysteem</p>
+
+<button (click)="GetCurrentState()">Get State</button>
+
+<br>
+<br>
+
+
+<input [(ngModel)]="thuis" type="checkbox" />Thuis Aanwezig = {{thuis}}
+
+<br>
+<br>
+
+
+<button (click)="OpenDoor()">Open Deur</button>
+<button (click)="OpenWindows()">Open Raam</button>
+<button (click)="Movement()">Beweging</button>
+
+<br>
+<br>
+
+
+<button (click)="Arm() ">Arm </button>
+<button (click)="Disarm() ">Disarm </button>
