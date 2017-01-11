@@ -10,8 +10,8 @@ import { StateService } from './../services/state-machine/state.service';
 export class HomeComponent implements OnInit {
   
 
-  private thuis:boolean = false;
-  private timer:number;
+  private home:boolean = false;
+  private timer:number = 3;
 
   constructor(private stateService: StateService) { }
 
@@ -54,17 +54,22 @@ export class HomeComponent implements OnInit {
     console.log(this.stateService.GetCurrentState());
   }
   OpenDoor(){
-    if(this.thuis==true){
+    
       if(this.stateService.GetCurrentState()=='arm'){
-        setTimeout(this.stateService.Intrusion(),10000);
-      }
-    }
-    else{
+        console.log("You have 3 seconds to turn off the alarm!")
+        let x = 3;
+        while(x>0){
+          console.log(x);
+         x=x-1;
 
-    }
-  }
+            
+          }
+        }
+    
+    
+  
   OpenWindow(){
-    if(this.thuis==true){
+    if(this.home==true){
 
     }
     else{
@@ -72,7 +77,7 @@ export class HomeComponent implements OnInit {
     }
   }
   Movement(){
-    if(this.thuis==true){
+    if(this.home==true){
 
     }
     else{

@@ -1,7 +1,7 @@
 {
-  "name": "angular2-seed",
+  "name": "alarmsystem",
   "version": "1.0.0",
-  "description": "A simple starter Angular2 project",
+  "description": "Alarm Sytem Project using Angular",
   "scripts": {
     "build": "webpack --progress",
     "watch": "npm run build -- --watch",

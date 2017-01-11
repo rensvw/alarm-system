@@ -7,14 +7,14 @@
 <br>
 
 
-<input [(ngModel)]="thuis" type="checkbox" />Thuis Aanwezig = {{thuis}}
+<input [(ngModel)]="home" type="checkbox" />Thuis Aanwezig = {{home}}
 
 <br>
 <br>
 
 
-<button (click)="OpenDoor()">Open Deur</button>
-<button (click)="OpenWindows()">Open Raam</button>
+<button (click)="OpenDoor()">Open Deur</button> {{timer}}
+<button (click)="OpenWindow()">Open Raam</button>
 <button (click)="Movement()">Beweging</button>
 
 <br>

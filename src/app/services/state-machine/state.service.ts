@@ -35,6 +35,11 @@ export class StateService {
     Intrusion(){
         this.stateMachine.fireAction('intrusion');
         console.log('Intrusion Detected');
+        console.log('Alarm is going off for 5 seconds!');
+        for(let x=5; x>0;setTimeout(x-1,1000)){
+            this.Timeout();
+        }
+        
     }
     Timeout(){
         this.stateMachine.fireAction('timeout');
