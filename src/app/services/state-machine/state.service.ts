@@ -3,7 +3,6 @@ import {Injectable} from '@angular/core';
  
 @Injectable()
 export class StateService {
-
          stateMachine = new StateMachine({
             initial: 'sleep',
             events: [
@@ -14,39 +13,33 @@ export class StateService {
                      name: 'arm', from: ['sleep'], to: 'arm'
                 }),
                 new StateEvent({
-                    name: 'disarm', from: ['alarm', 'arm'], to: 'sleep'
+                    name: 'disarm', from: ['alarm', 'arm','alarmdelay'], to: 'sleep'
                 }),
                 new StateEvent({
-                    name: 'intrusion', from: ['arm'], to: 'alarm'
+                    name: 'intrusion', from: ['arm','alarmdelay'], to: 'alarm'
+                }),
+                new StateEvent({
+                    name: 'intrusiondelay', from: ['arm'], to: 'alarmdelay'
                 }),
                 new StateEvent({
                     name: 'timeout', from: ['alarm'], to: 'arm'
-                })                          
+                }),                      
             ]});
-
     Arm() {
         this.stateMachine.fireAction('arm');
+        console.log(this.stateMachine.getCurrent());
         console.log('alarm armed');
     }
     Disarm(){
         this.stateMachine.fireAction('disarm');
+        console.log(this.stateMachine.getCurrent());
         console.log('Alarm Disarmed!');
-    }
-    Intrusion(){
-        this.stateMachine.fireAction('intrusion');
-        console.log('Intrusion Detected');
-        console.log('Alarm is going off for 5 seconds!');
-        for(let x=5; x>0;setTimeout(x-1,1000)){
-            this.Timeout();
-        }
-        
-    }
-    Timeout(){
-        this.stateMachine.fireAction('timeout');
-        console.log('Alarm Timed Out');
     }
     GetCurrentState(){
         return this.stateMachine.getCurrent();
+    }
+    FireAction(action){
+        this.stateMachine.fireAction(action);
     }
 
 }
