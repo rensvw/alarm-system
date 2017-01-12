@@ -1,27 +1,16 @@
-
 <h3>Home</h3>
 <p>Welkom op de startpagina van het alarmsysteem</p>
-
-
 <div [ngStyle]="{'background-color': colour}">Current state is: {{state}} </div><br>
 <button (click)="GetCurrentState()">Get State</button>
 <br>
 <br>
-
-
 <input [(ngModel)]="home" type="checkbox" />Thuis Aanwezig = {{home}}
-
+<br>
+<br> Time until alarm: {{timerDelay}} <br><br> Time until timeout: {{timerAlarm}} <br><br>
+<button (click)="OpenDoor()">Open Deur</button>
+<button (click)="OpenWindow()">Open Raam</button>
+<button (click)="Movement()">Beweging</button>
 <br>
 <br>
-
-
-<button (click)="OpenDoor()">Open Deur</button> Time until alarm: {{timerDelay}} <br><br>
-<button (click)="OpenWindow()">Open Raam</button> Time until timeout: {{timerAlarm}} <br><br>
-<button (click)="Movement()">Beweging</button> Time until timeout: {{timerAlarm}} <br><br>
-
-<br>
-<br>
-
-
 <button (click)="Arm() ">Arm </button>
 <button (click)="Disarm() ">Disarm </button>
