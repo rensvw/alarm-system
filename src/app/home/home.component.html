@@ -3,7 +3,7 @@
 <p>Welkom op de startpagina van het alarmsysteem</p>
 
 
-<div [style.background-color]="colour">Current state is: {{state}} </div><br><br>
+<div [ngStyle]="{'background-color': colour}">Current state is: {{state}} </div><br>
 <button (click)="GetCurrentState()">Get State</button>
 <br>
 <br>

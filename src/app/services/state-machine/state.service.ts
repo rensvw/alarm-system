@@ -19,9 +19,6 @@ export class StateService {
                     name: 'intrusion', from: ['arm','alarmdelay'], to: 'alarm'
                 }),
                 new StateEvent({
-                    name: 'intrusiondelay', from: ['arm'], to: 'alarmdelay'
-                }),
-                new StateEvent({
                     name: 'timeout', from: ['alarm'], to: 'arm'
                 }),                      
             ]});

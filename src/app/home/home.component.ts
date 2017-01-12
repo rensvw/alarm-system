@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
   Disarm(){
     if(this.stateService.GetCurrentState() != 'sleep'){
       this.stateService.Disarm();
+      this.colour="white";
       this.state = this.stateService.GetCurrentState();
     }
     else{
@@ -79,17 +80,20 @@ export class HomeComponent implements OnInit {
                 object.state = object.stateService.GetCurrentState();    
                  if(object.timerAlarm==1 && object.stateService.GetCurrentState() == 'alarm'){
                     object.stateService.FireAction("timeout");
+                    object.colour="white";
                     object.state = object.stateService.GetCurrentState();   
                     object.GetCurrentState();
                 }  
                 if(object.stateService.GetCurrentState() == 'sleep'){
                   object.timerAlarm=1;
-                  object.state = object.stateService.GetCurrentState();   
+                  object.state = object.stateService.GetCurrentState();  
+                  object.colour="white"; 
                 }
                           
             if (--object.timerAlarm) myLoop(object.timerAlarm);      //  decrement i and call myLoop again if i > 0
             }, 1000)
         })(object.timerAlarm); 
+        
     }
     else{
       console.log('Alarm is already timed out');
@@ -157,26 +161,32 @@ export class HomeComponent implements OnInit {
      this.state = this.stateService.GetCurrentState();
           let object = this;
           object.timerDelay = 5;
+          
           object.AlarmSound(5,1000);
+          
           (function myLoop (timer) {    
             setTimeout(function () { 
             object.state = object.stateService.GetCurrentState(); 
             console.log("Timer:",object.timerDelay)  
                 if(object.timerDelay==1){
                     object.stateService.FireAction("intrusion");
+                    object.colour = "red"
                     object.state = object.stateService.GetCurrentState();   
                     object.Timeout();
                 }  
                 if(object.stateService.GetCurrentState() == 'sleep'){
                   object.timerDelay=1;
+                  object.colour="white";
                   object.state = object.stateService.GetCurrentState();   
                 }      //  your code here                
             if (--object.timerDelay) myLoop(object.timerDelay);      //  decrement i and call myLoop again if i > 0
             }, 1000)
-          })(object.timerDelay);   
+          })(object.timerDelay),function(){
+          };   
   }
   IntrusionDetected(){
     this.stateService.FireAction("intrusion")
+    this.colour="red";
     this.state = this.stateService.GetCurrentState();
     this.Timeout();
   }
