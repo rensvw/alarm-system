@@ -27,13 +27,13 @@ export class StateService {
             ]});
     Arm() {
         this.stateMachine.fireAction('arm');
-        console.log(this.stateMachine.getCurrent());
-        console.log('alarm armed');
+        console.log('Alarm Armed!');
+        console.log("Current state = ",this.stateMachine.getCurrent()); 
     }
     Disarm(){
         this.stateMachine.fireAction('disarm');
-        console.log(this.stateMachine.getCurrent());
         console.log('Alarm Disarmed!');
+        console.log("Current state = ",this.stateMachine.getCurrent());
     }
     GetCurrentState(){
         return this.stateMachine.getCurrent();

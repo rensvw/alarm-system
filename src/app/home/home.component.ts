@@ -11,10 +11,13 @@ import { StateService } from './../services/state-machine/state.service';
 export class HomeComponent implements OnInit {
 
   private home:boolean = false;
-  private timer:number = 3;
+  private timerDelay:number = 5;
+  private timerAlarm:number = 5;
   private door:boolean = false;
   private movement:boolean = false;
   private windowHouse:boolean = false;
+  private state:string = "sleep";
+  private colour:string = "white";
 
   constructor(private stateService: StateService) { }
 
@@ -24,6 +27,7 @@ export class HomeComponent implements OnInit {
   Arm(){
     if(this.stateService.GetCurrentState() != 'arm' && this.stateService.GetCurrentState() != 'alarm'){
       this.stateService.Arm();
+      this.state = this.stateService.GetCurrentState();
     }
     else{
       console.log('Alarm is already armed');
@@ -32,6 +36,7 @@ export class HomeComponent implements OnInit {
   Disarm(){
     if(this.stateService.GetCurrentState() != 'sleep'){
       this.stateService.Disarm();
+      this.state = this.stateService.GetCurrentState();
     }
     else{
       console.log('Alarm is already sleeping');
@@ -40,97 +45,60 @@ export class HomeComponent implements OnInit {
   Intrusion(door,windowHouse,movement,home){
       // Deur is open
         if(door == true){
-          console.log("door is open");
-          console.log(this.stateService.GetCurrentState());
-          let object = this;
-          (function myLoop (i) {    
-            setTimeout(function () {   
-            console.log("Timer:",i)  
-                if(i==1){
-                    object.stateService.FireAction("intrusion");
-                    console.log("alarm is ringing!!!!")
-                    object.Timeout();
-
-                }        //  your code here                
-            if (--i) myLoop(i);      //  decrement i and call myLoop again if i > 0
-            }, 1000)
-          })(5);            
+          this.DelayedAlarm();
         }
         // Raam is open
         if(windowHouse == true){
                 if(home == true){
                         // raam is open en je bent thuis
-                        this.stateService.FireAction("intrusion")
-                        console.log(this.stateService.GetCurrentState());
-                        console.log("raam open en je bent thuis");
-                        console.log("Alarm is ringing");
-                        this.Timeout();
+                        this.IntrusionDetected();
                         }
                 if(home == false){
                         // raam is open en je bent niet thuis
-                        this.stateService.FireAction("intrusion")
-                        console.log(this.stateService.GetCurrentState());
-                        console.log("raam open en je bent niet thuis");
-                        console.log("Alarm is ringing");      
-                        this.Timeout();
+                        this.IntrusionDetected();
             }    
         }
         // Er is beweging in het huis
         if(movement == true){
                 if(home == false){
                       // raam is open en je bent niet thuis
-                      this.stateService.FireAction("intrusion")
-                      console.log(this.stateService.GetCurrentState());
-                      console.log("beweging en je bent niet thuis");
-                      console.log("Alarm is ringing");
-                      this.Timeout();
+                      this.IntrusionDetected();
+                }
+                if(home == true){
+                  this.DelayedAlarm();
                 }
         }
     }
   Timeout(){
     if(this.stateService.GetCurrentState() != 'sleep' && this.stateService.GetCurrentState() != 'arm'){
-        var object = this;   
-        (function myLoop (i) {    
+        let object = this;
+        object.timerAlarm = 5;
+        object.AlarmSirene(50,100);
+        (function myLoop (timer) {    
             setTimeout(function () {   
-                console.log("Timer:",i)
-                 if(i==1 && object.stateService.GetCurrentState() == 'alarm'){
-                    console.log("alarm timed out");
+                object.state = object.stateService.GetCurrentState();    
+                 if(object.timerAlarm==1 && object.stateService.GetCurrentState() == 'alarm'){
                     object.stateService.FireAction("timeout");
+                    object.state = object.stateService.GetCurrentState();   
+                    object.GetCurrentState();
                 }  
                 if(object.stateService.GetCurrentState() == 'sleep'){
-                  i=1;
+                  object.timerAlarm=1;
+                  object.state = object.stateService.GetCurrentState();   
                 }
                           
-            if (--i) myLoop(i);      //  decrement i and call myLoop again if i > 0
+            if (--object.timerAlarm) myLoop(object.timerAlarm);      //  decrement i and call myLoop again if i > 0
             }, 1000)
-            
-        })(5); 
-
+        })(object.timerAlarm); 
     }
     else{
       console.log('Alarm is already timed out');
     }
   }
-  IntrusionDelay(){
-        this.stateService.FireAction('intrusiondelay');
-        console.log("5 seconds until alarm rings!!");
-        let object = this;
-         (function myLoop (i) {    
-            setTimeout(function () {   
-            console.log("Timer:",i)                  
-                if(i==1){
-                    object.stateService.FireAction("intrusion");
-                    console.log("alarm is ringing!!!!")
-                }
-                if(object.stateService.GetCurrentState() == 'sleep'){
-                  i=1;
-                }                
-            if (--i) myLoop(i);      //  decrement i and call myLoop again if i > 0
-            }, 1000)
-        })(5);
-  }
+ 
   GetCurrentState(){
-    console.log(this.stateService.GetCurrentState());
+    this.state = this.stateService.GetCurrentState();
+    console.log("Current state = ",this.stateService.GetCurrentState());
   }
   OpenDoor(){
     if(this.stateService.GetCurrentState()=='arm'){
@@ -153,4 +121,65 @@ export class HomeComponent implements OnInit {
           this.movement = false;            
           }
   }
+  AlarmSound(timer,speed){
+    let audio = new Audio();
+    let object = this;
+    audio.src = "http://www.soundjay.com/button/beep-07.wav";
+    audio.load();
+    (function myLoop (timer) {    
+            setTimeout(function () {
+              audio.play();
+               if(object.stateService.GetCurrentState() == 'sleep'){
+                  timer=1;              
+                }
+            if (--timer) myLoop(timer);      //  decrement i and call myLoop again if i > 0
+            }, speed)
+            
+        })(timer); 
+
+  }
+  AlarmSirene(timer,speed){
+    let audio = new Audio();
+    let object = this;
+    audio.src = "http://www.soundjay.com/button/beep-02.wav";
+    audio.load();
+    (function myLoop (timer) {    
+            setTimeout(function () {
+              audio.play();
+               if(object.stateService.GetCurrentState() == 'sleep'){
+                  timer=1;           
+                }
+            if (--timer) myLoop(timer);      //  decrement i and call myLoop again if i > 0
+            }, speed) 
+        })(timer); 
+  }
+  DelayedAlarm(){
+     this.state = this.stateService.GetCurrentState();
+          let object = this;
+          object.timerDelay = 5;
+          object.AlarmSound(5,1000);
+          (function myLoop (timer) {    
+            setTimeout(function () { 
+            object.state = object.stateService.GetCurrentState(); 
+            console.log("Timer:",object.timerDelay)  
+                if(object.timerDelay==1){
+                    object.stateService.FireAction("intrusion");
+                    object.state = object.stateService.GetCurrentState();   
+                    object.Timeout();
+                }  
+                if(object.stateService.GetCurrentState() == 'sleep'){
+                  object.timerDelay=1;
+                  object.state = object.stateService.GetCurrentState();   
+                }      //  your code here                
+            if (--object.timerDelay) myLoop(object.timerDelay);      //  decrement i and call myLoop again if i > 0
+            }, 1000)
+          })(object.timerDelay);   
+  }
+  IntrusionDetected(){
+    this.stateService.FireAction("intrusion")
+    this.state = this.stateService.GetCurrentState();
+    this.Timeout();
+  }
+
+  
   }

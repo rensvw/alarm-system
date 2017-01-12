@@ -1,8 +1,10 @@
+
 <h3>Home</h3>
 <p>Welkom op de startpagina van het alarmsysteem</p>
 
-<button (click)="GetCurrentState()">Get State</button>
 
+<div [style.background-color]="colour">Current state is: {{state}} </div><br><br>
+<button (click)="GetCurrentState()">Get State</button>
 <br>
 <br>
 
@@ -13,9 +15,9 @@
 <br>
 
 
-<button (click)="OpenDoor()">Open Deur</button> {{timer}}
-<button (click)="OpenWindow()">Open Raam</button>
-<button (click)="Movement()">Beweging</button>
+<button (click)="OpenDoor()">Open Deur</button> Time until alarm: {{timerDelay}} <br><br>
+<button (click)="OpenWindow()">Open Raam</button> Time until timeout: {{timerAlarm}} <br><br>
+<button (click)="Movement()">Beweging</button> Time until timeout: {{timerAlarm}} <br><br>
 
 <br>
 <br>
